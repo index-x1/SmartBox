@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Styling für den aktiven Schritt und die Prozess-Linien */
+    .step-item.active { font-weight: bold; color: #0d6efd; /* Bootstrap Primary Blue */ }
+    .step-connector { border-left: 2px dashed #dee2e6; height: 1.5rem; margin-left: 1.2rem; }
+    .step-icon { width: 2.5rem; height: 2.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; background-color: #e9ecef; color: #495057; font-weight: bold; }
+    .step-item.active .step-icon { background-color: #0d6efd; color: white; }
+    .hw-status-indicator { width: 20px; height: 20px; border-radius: 50%; transition: background-color 0.3s; }
+</style>
+
+<div class="container-fluid vh-100 d-flex flex-column p-3 bg-light">
+    <header class="row mb-3 align-items-center">
+        <div class="col">
+            <h1 id="user-greeting" class="h4">Bitte anmelden...</h1>
+        </div>
+        <div class="col text-end">
+            <p class="mb-0">{{ _('Guthaben') }}</p>
+            <strong id="balance-display" class="h5">-.-- €</strong>
+            <button id="cart-toggle-btn" class="btn btn-sm btn-outline-primary position-relative ms-2">
+                Warenkorb
+                <span id="cart-counter" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="row flex-grow-1">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Ablauf</h5>
+                    <div id="step-0" class="step-item d-flex align-items-center mb-2">
+                        <div class="step-icon">1</div><span class="ms-3">Karte auflegen</span>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div id="step-1" class="step-item d-flex align-items-center mb-2">
+                        <div class="step-icon">2</div><span class="ms-3">Box auf Waage stellen</span>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div id="step-2" class="step-item d-flex align-items-center mb-2">
+                        <div class="step-icon">3</div><span class="ms-3">Material entnehmen</span>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div id="step-3" class="step-item d-flex align-items-center">
+                        <div class="step-icon">4</div><span class="ms-3">Entnahme abschließen</span>
+                    </div>
+                    <p class="text-center mt-2 text-primary fs-4">⟳</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 d-flex flex-column">
+            <div class="card shadow-sm flex-grow-1">
+                <div id="process-step-display" class="card-body d-flex flex-column justify-content-center align-items-center text-center p-5">
+                    </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card shadow-sm mt-3">
+        <div class="card-header small text-muted d-flex justify-content-between align-items-center">
+            <span>Test & Debugging Cockpit</span>
+            <div class="d-flex align-items-center gap-3">
+                <strong>Hardware-Status:</strong>
+                <div class="d-flex align-items-center gap-1">
+                    <div id="hw-led" class="hw-status-indicator bg-dark" title="Box LED"></div>
+                    <small>LED</small>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <div id="hw-lock" class="hw-status-indicator bg-danger" title="Box-Verriegelung"></div>
+                    <small>Schloss</small>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-2">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-3"><div class="input-group"><input type="text" id="sim-customer-rfid" class="form-control form-control-sm" placeholder="Kunden-RFID..." value="RFID-CUST-MAX"><button class="btn btn-sm btn-secondary" onclick="simulateLogin()">Login</button></div></div>
+                <div class="col-md-5"><div class="input-group"><input type="text" id="sim-box-rfid" class="form-control form-control-sm" placeholder="Box-RFID..." value="RFID-BOX-001"><input type="number" id="sim-weight-before" class="form-control form-control-sm" placeholder="Gewicht vorher (g)"><button class="btn btn-sm btn-primary" onclick="simulateBoxScan()">Box Scannen</button></div></div>
+                <div class="col-md-4"><div class="input-group"><input type="number" id="sim-weight-after" class="form-control form-control-sm" placeholder="Gewicht nachher (g)"><button class="btn btn-sm btn-success" onclick="confirmWithdrawal()">Bestätigen</button></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="shoppingCart" aria-labelledby="shoppingCartLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="shoppingCartLabel">Warenkorb</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="cart-items"><p class="text-muted text-center">{{ _('Noch keine Artikel hinzugefügt.') }}</p></div>
+    </div>
+    <div class="offcanvas-footer p-3 border-top">
+        <div class="d-flex justify-content-between fw-bold">
+            <span>{{ _('Gesamt:') }}</span>
+            <span id="cart-total">0.00 €</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // === Zustand der Anwendung ===
+        let currentState = 'AWAITING_USER';
+        let currentUser = null;
+        let currentBox = null;
+        let cart = [];
+
+        // === UI-Elemente ===
+        const userGreeting = document.getElementById('user-greeting');
+        const balanceDisplay = document.getElementById('balance-display');
+        const processStepDisplay = document.getElementById('process-step-display');
+        const stepElements = { 0: document.getElementById('step-0'), 1: document.getElementById('step-1'), 2: document.getElementById('step-2'), 3: document.getElementById('step-3') };
+        const cartToggleButton = document.getElementById('cart-toggle-btn');
+        const shoppingCart = new bootstrap.Offcanvas(document.getElementById('shoppingCart'));
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const cartCounter = document.getElementById('cart-counter');
+        const hwLed = document.getElementById('hw-led');
+        const hwLock = document.getElementById('hw-lock');
+
+        const stepTemplates = {
+            'AWAITING_USER': { step: 0, html: `<h2 class="card-title">Willkommen!</h2><p class="lead">Bitte Kunden-RFID im Test-Panel eingeben und auf 'Login' klicken.</p>` },
+            'AWAITING_BOX': { step: 1, html: `<h2 class="card-title">Nächster Artikel</h2><p class="lead">Bitte Box-RFID und optional ein Gewicht eingeben, dann auf 'Box Scannen' klicken.</p>` },
+            'WITHDRAWAL': { step: 2, html: (box) => `<h2 class="card-title">Material entnehmen</h2><p class="lead"><strong>Material:</strong> ${box ? box.name : '...'}</p><p>Bitte Gewicht nach der Entnahme eingeben und bestätigen.</p>` },
+            'FINISHED_TRANSACTION': { step: 3, html: `<h2 class="card-title">Vielen Dank!</h2><p class="lead">Die Entnahme wurde verbucht.</p><p>Bereit für die nächste Box.</p>` }
+        };
+
+        async function apiCall(endpoint, data) {
+            // ... (apiCall Funktion wie gehabt)
+        }
+        
+        window.simulateLogin = async function() { /* ... wie gehabt ... */ };
+        window.simulateBoxScan = async function() { /* ... wie gehabt ... */ };
+        window.confirmWithdrawal = async function() { /* ... wie gehabt ... */ };
+
+        function updateHardwareUI(state) {
+            if (state === 'WITHDRAWAL') {
+                hwLed.style.backgroundColor = 'yellow';
+                hwLock.style.backgroundColor = 'green'; // Entriegelt
+            } else if (state === 'FINISHED_TRANSACTION') {
+                hwLed.style.backgroundColor = 'green';
+                hwLock.style.backgroundColor = 'red'; // Verriegelt
+            } else {
+                hwLed.style.backgroundColor = '#6c757d'; // Aus (grau)
+                hwLock.style.backgroundColor = 'red'; // Verriegelt
+            }
+        }
+
+        function updateUI() {
+            userGreeting.textContent = currentUser ? `Hallo, ${currentUser.firstName}!` : 'Bitte anmelden...';
+            balanceDisplay.textContent = currentUser ? `${currentUser.balance.toFixed(2)} €` : '-.-- €';
+
+            Object.values(stepElements).forEach(el => el.classList.remove('active'));
+            const activeStepInfo = stepTemplates[currentState];
+            if (activeStepInfo) {
+                const activeStepElement = stepElements[activeStepInfo.step];
+                if (activeStepElement) activeStepElement.classList.add('active');
+                processStepDisplay.innerHTML = typeof activeStepInfo.html === 'function' ? activeStepInfo.html(currentBox) : activeStepInfo.html;
+            }
+            
+            // Warenkorb
+            cartCounter.textContent = cart.length;
+            cartCounter.style.display = cart.length > 0 ? 'inline-block' : 'none';
+            if (cart.length === 0) {
+                cartItems.innerHTML = `<p class="text-muted text-center p-3">Noch keine Artikel hinzugefügt.</p>`;
+            } else {
+                cartItems.innerHTML = cart.map(item => `<div class="d-flex justify-content-between p-2 border-bottom"><span>${item.amount}g ${item.name}</span><strong>${item.price.toFixed(2)} €</strong></div>`).join('');
+            }
+            cartTotal.textContent = `${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)} €`;
+
+            updateHardwareUI(currentState);
+        }
+        
+        cartToggleButton.addEventListener('click', () => shoppingCart.toggle());
+        updateUI();
+    });
+</script>
+{% endblock %}

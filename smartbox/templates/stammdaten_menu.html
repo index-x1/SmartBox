@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ _('Stammdaten verwalten') }}</h1>
+    <p>{{ _('Bitte wählen Sie den zu verwaltenden Bereich aus.') }}</p>
+    <div class="list-group mt-4">
+        <a href="{{ url_for('customers.list_all') }}" class="list-group-item list-group-item-action">{{ _('Kunden') }}</a>
+        <a href="{{ url_for('boxes.list_all') }}" class="list-group-item list-group-item-action">{{ _('Boxen') }}</a>
+        <a href="{{ url_for('materials.list_all') }}" class="list-group-item list-group-item-action">{{ _('Materialien') }}</a>
+        <a href="{{ url_for('price_groups.list_all') }}" class="list-group-item list-group-item-action">{{ _('Preisgruppen') }}</a>
+    </div>
+    <a href="{{ url_for('home') }}" class="btn btn-secondary mt-4">{{ _('Zurück zum Hauptmenü') }}</a>
+{% endblock %}

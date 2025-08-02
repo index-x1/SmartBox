@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=3) }}
+        </div>
+        <div class="mb-3">
+            {{ form.manufacturer.label(class="form-label") }}
+            {{ form.manufacturer(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.usage_hint.label(class="form-label") }}
+            {{ form.usage_hint(class="form-control", rows=2) }}
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.price_group_id.label(class="form-label") }}
+                {{ form.price_group_id(class="form-select") }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.reorder_threshold_grams.label(class="form-label") }}
+                {{ form.reorder_threshold_grams(class="form-control") }}
+            </div>
+                        <div class="col-md-6 mb-3">
+                {{ form.reorder_threshold_grams.label(class="form-label") }}
+                {{ form.reorder_threshold_grams(class="form-control") }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.grams_per_piece.label(class="form-label") }}
+                {{ form.grams_per_piece(class="form-control") }}
+            </div>
+        </div>
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+{% endblock %}

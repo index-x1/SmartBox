@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.price_per_kg.label(class="form-label") }}
+            {{ form.price_per_kg(class="form-control") }}
+        </div>
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+{% endblock %}

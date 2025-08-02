@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ _('Willkommen im SmartBox System') }}</h1>
+    <div class="list-group">
+        <a href="{{ url_for('stammdaten_menu') }}" class="list-group-item list-group-item-action">{{ _('Stammdaten verwalten') }}</a>
+        <a href="{{ url_for('weighing.session_view') }}" class="list-group-item list-group-item-action">{{ _('Kundenmodus starten') }}</a>
+        </div>
+{% endblock %}

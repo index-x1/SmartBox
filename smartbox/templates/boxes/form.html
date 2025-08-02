@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.rfid_uid.label(class="form-label") }}
+            {{ form.rfid_uid(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.material_id.label(class="form-label") }}
+            {{ form.material_id(class="form-select") }}
+        </div>
+        <div class="mb-3">
+            {{ form.tare_weight.label(class="form-label") }}
+            {{ form.tare_weight(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.location.label(class="form-label") }}
+            {{ form.location(class="form-control") }}
+        </div>
+        <div class="form-check mb-3">
+            {{ form.is_active(class="form-check-input") }}
+            {{ form.is_active.label(class="form-check-label") }}
+        </div>
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+{% endblock %}

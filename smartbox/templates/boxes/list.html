@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>{{ _('Boxenübersicht') }}</h1>
+        <a href="{{ url_for('boxes.add') }}" class="btn btn-primary">{{ _('Neue Box anlegen') }}</a>
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>{{ _('RFID UID') }}</th>
+                <th>{{ _('Material') }}</th>
+                <th>{{ _('Lagerort') }}</th>
+                <th>{{ _('Aktiv') }}</th>
+                <th>{{ _('Aktionen') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for box in boxes %}
+            <tr>
+                <td>{{ box.rfid_uid }}</td>
+                {# Diese Zeile zeigt den Namen des verknüpften Materials an #}
+                <td>{{ box.material.name if box.material else 'N/A' }}</td>
+                <td>{{ box.location or '' }}</td>
+                <td>{{ _('Ja') if box.is_active else _('Nein') }}</td>
+                <td>
+                    <a href="{{ url_for('boxes.edit', id=box.id) }}" class="btn btn-sm btn-secondary">{{ _('Bearbeiten') }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,16 @@
+# Virtuelle Umgebung
+venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Datenbank-Datei (Daten gehören nicht in die Versionskontrolle)
+smartbox.db
+
+# Umgebungs-Variablen
+.flaskenv
+
+# Editor/IDE-spezifische Ordner
+.vscode/
+.idea/
