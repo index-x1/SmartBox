@@ -3,6 +3,7 @@ from smartbox import db
 from smartbox.models import PriceGroup
 from smartbox.price_groups.forms import PriceGroupForm
 from flask_babel import _
+from smartbox.decorators import admin_required
 
 price_groups_bp = Blueprint('price_groups', __name__, template_folder='../templates/price_groups')
 

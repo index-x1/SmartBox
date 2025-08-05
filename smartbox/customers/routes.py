@@ -4,15 +4,21 @@ from smartbox.models import Customer
 from smartbox.customers.forms import CustomerForm
 from flask_babel import _
 from datetime import datetime
+from smartbox.decorators import admin_required
+from flask_login import login_required
 
 customers_bp = Blueprint('customers', __name__)
 
 @customers_bp.route('/')
+@login_required
+@admin_required
 def list_all():
     customers = Customer.query.order_by(Customer.last_name).all()
     return render_template('customers/list.html', customers=customers, title=_('Kundenübersicht'))
 
 @customers_bp.route('/add', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def add():
     form = CustomerForm()
     if request.method == 'GET':
@@ -33,6 +39,8 @@ def add():
     return render_template('customers/form.html', form=form, title=_('Neuen Kunden anlegen'))
 
 @customers_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def edit(id):
     customer = Customer.query.get_or_404(id)
     form = CustomerForm()

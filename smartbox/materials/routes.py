@@ -3,6 +3,7 @@ from smartbox import db
 from smartbox.models import Material, PriceGroup
 from smartbox.materials.forms import MaterialForm
 from flask_babel import _
+from smartbox.decorators import admin_required
 
 materials_bp = Blueprint('materials', __name__, template_folder='../templates/materials')
 

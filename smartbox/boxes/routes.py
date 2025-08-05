@@ -3,6 +3,7 @@ from smartbox import db
 from smartbox.models import Box, Material
 from smartbox.boxes.forms import BoxForm
 from flask_babel import _
+from smartbox.decorators import admin_required
 
 # Wir entfernen den 'template_folder', um die globalen Templates zu nutzen
 boxes_bp = Blueprint('boxes', __name__)
