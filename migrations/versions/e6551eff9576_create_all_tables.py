@@ -1,8 +1,8 @@
-"""Initial schema with all models
+"""Create all tables
 
-Revision ID: 1b826b608eb9
+Revision ID: e6551eff9576
 Revises: 
-Create Date: 2025-08-02 21:52:05.184640
+Create Date: 2025-08-03 12:33:44.853840
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1b826b608eb9'
+revision = 'e6551eff9576'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -53,11 +53,18 @@ def upgrade():
     sa.Column('name', sa.String(length=150), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('manufacturer', sa.String(length=100), nullable=True),
+    sa.Column('manufacturer_sku', sa.String(length=100), nullable=True),
     sa.Column('usage_hint', sa.Text(), nullable=True),
     sa.Column('unit', sa.String(length=20), nullable=False),
     sa.Column('reorder_threshold_grams', sa.Float(), nullable=True),
     sa.Column('grams_per_piece', sa.Float(), nullable=True),
     sa.Column('price_group_id', sa.Integer(), nullable=True),
+    sa.Column('image_url', sa.String(length=255), nullable=True),
+    sa.Column('supplier_url_1', sa.String(length=255), nullable=True),
+    sa.Column('supplier_url_2', sa.String(length=255), nullable=True),
+    sa.Column('supplier_url_3', sa.String(length=255), nullable=True),
+    sa.Column('tags', sa.String(length=200), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['price_group_id'], ['price_groups.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

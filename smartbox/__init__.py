@@ -15,10 +15,17 @@ login.login_message = _l('Bitte melden Sie sich an, um auf diese Seite zuzugreif
 def get_locale():
     return request.accept_languages.best_match(current_app.config['LANGUAGES']) or 'de'
 
-def create_app(config_class=Config):
+def create_app(config_override=None):
     app = Flask(__name__)
-    app.config.from_object(config_class)
 
+    # 1. Standardkonfiguration laden
+    app.config.from_object(Config)
+
+    # 2. Optional: Konfigurations Überschreibungen (z.B. durch Tests)
+    if config_override:
+        app.config.update(config_override)
+
+    # 3. Erweiterungen initialisieren
     db.init_app(app)
     migrate.init_app(app, db)
     babel.init_app(app, locale_selector=get_locale)

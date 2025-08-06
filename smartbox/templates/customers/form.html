@@ -99,20 +99,19 @@
                 {% endif %}
             </div>
         </div>
-
+        
         <hr class="my-4">
 
         <div class="row align-items-center">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 {{ form.balance.label(class="form-label") }}
-                {{ form.balance(class="form-control" + (" is-invalid" if form.balance.errors else "")) }}
-                 {% if form.balance.errors %}
-                    <div class="invalid-feedback d-block">
-                        {% for error in form.balance.errors %}<span>{{ error }}</span>{% endfor %}
-                    </div>
-                {% endif %}
+                {{ form.balance(class="form-control", readonly=True) }}
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
+                {{ form.deposit_amount.label(class="form-label") }}
+                {{ form.deposit_amount(class="form-control", placeholder="z.B. 20.00") }}
+            </div>
+            <div class="col-md-4 mb-3">
                 <div class="form-check mt-3">
                     {{ form.is_active(class="form-check-input") }}
                     {{ form.is_active.label(class="form-check-label") }}

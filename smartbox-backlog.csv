@@ -1,0 +1,46 @@
+"Title","Body","Labels"
+"ADM-01: Kundenverwaltung (CRUD)","**User Story:** Als **Admin** möchte ich **Kunden** anlegen, bearbeiten und in einer Liste sehen.
+
+**Akzeptanzkriterien:**
+- [ ] Ein Admin kann einen neuen Kunden mit allen Stammdaten anlegen.
+- [ ] Alle Kunden werden in einer Tabelle angezeigt.
+- [ ] Ein Admin kann die Daten eines Kunden ändern.
+- [ ] Eingaben werden validiert.","Feature,Admin,Priorität: Must-have,Aufwand: Mittel"
+"ADM-02: Preisgruppenverwaltung (CRUD)","**User Story:** Als **Admin** möchte ich **Preisgruppen** (Name, Preis/kg) definieren.","Feature,Admin,Priorität: Must-have,Aufwand: Niedrig"
+"ADM-03: Materialverwaltung (CRUD)","**User Story:** Als **Admin** möchte ich **Materialien** (Name, Lieferanten-Links, etc.) anlegen und einer Preisgruppe zuweisen.
+
+**Abhängigkeiten:** ADM-02","Feature,Admin,Priorität: Must-have,Aufwand: Mittel"
+"ADM-04: Boxenverwaltung (CRUD)","**User Story:** Als **Admin** möchte ich **Boxen** (RFID) anlegen und ihnen ein Material zuweisen.
+
+**Abhängigkeiten:** ADM-03","Feature,Admin,Priorität: Must-have,Aufwand: Mittel"
+"ADM-05: Sicheres Admin-Login","**User Story:** Als **Admin** möchte ich mich sicher mit **E-Mail und Passwort** einloggen können.
+
+**Abhängigkeiten:** ADM-06","Feature,Sicherheit,Priorität: Must-have,Aufwand: Mittel"
+"ADM-06: Benutzerrollen-System","**User Story:** Als **Admin** möchte ich **Benutzerrollen** (Admin, Kunde) vergeben können.","Feature,Sicherheit,Priorität: Must-have,Aufwand: Niedrig"
+"CUST-01: Kunden-Login per RFID","**User Story:** Als **Kunde** möchte ich mich mit meiner **RFID-Karte** an der Station anmelden, um eine Wiege-Sitzung zu starten.","Feature,Kundenmodus,Priorität: Must-have,Aufwand: Hoch"
+"CUST-02: Box-Wiegeprozess","**User Story:** Als **Kunde** möchte ich eine **Box auf die Waage stellen**, damit das System das Material erkennt und den Wiegevorgang einleitet.
+
+**Abhängigkeiten:** CUST-01","Feature,Kundenmodus,Priorität: Must-have,Aufwand: Hoch"
+"C-UX-01: UI-Prozessführung","**User Story:** Als **Kunde** möchte ich durch eine **klare Schritt-für-Schritt-Anleitung** auf dem Bildschirm geführt werden.","UX,Kundenmodus,Priorität: Must-have,Aufwand: Mittel"
+"INV-01: Nachbestell-Alarm per E-Mail","**User Story:** Als **Betreiber** möchte ich automatisch eine **E-Mail** erhalten, wenn der Füllstand eines Materials einen kritischen Wert unterschreitet.","Feature,Bestandsmanagement,Priorität: Should-have,Aufwand: Mittel"
+"INV-03: Automatischer Preisvergleich","**User Story:** Als **System** möchte ich automatisch die **Preise von Online-Shops** für ein Material vergleichen, um den günstigsten Anbieter vorzuschlagen.","Feature,Bestandsmanagement,Innovativ,Priorität: Nice-to-have,Aufwand: Hoch"
+"INV-04: Analytics-Dashboard","**User Story:** Als **Betreiber** möchte ich ein **Analytics-Dashboard** sehen, das mir Bestseller-Materialien und den Gesamtverbrauch anzeigt.","Feature,Reporting,Priorität: Should-have,Aufwand: Hoch"
+"ADV-03: Erweiterung für Meterware","**User Story:** Als **Betreiber** möchte ich das **System für Meterware** (Stoffe, Fäden) mit einem Längen- statt Gewichtssensor erweitern können.","Feature,Meterware,Innovativ,Priorität: Nice-to-have,Aufwand: Hoch"
+"ADV-04: Tara-Plausibilisierung","**User Story:** Als **System** möchte ich die **Tara-Wiegung plausibilisieren** und bei starken Abweichungen eine Warnung ausgeben, um Manipulationen zu erkennen.","Feature,Sicherheit,Priorität: Must-have,Aufwand: Mittel"
+"ADV-05: Sprachumschaltung (i18n)","**User Story:** Als **Kunde** möchte ich die **Sprache der Benutzeroberfläche** (z.B. Deutsch/Englisch) umschalten können.","Feature,UX,Priorität: Should-have,Aufwand: Mittel"
+"ERP-01: ERP/WMS-Anbindung via API","**User Story:** Als **System** möchte ich über eine **REST-API** verfügen, um Entnahmedaten in Echtzeit an ein **ERP- oder WMS-System** zu melden.","Feature,Industrie,API,Priorität: Nice-to-have,Aufwand: Hoch"
+"ERP-02: Kostenstellen-Zuordnung","**User Story:** Als **Lagerleiter** möchte ich **Kostenstellen oder Fertigungsaufträge** im System anlegen, damit Mitarbeiter Entnahmen direkt einem Projekt zuordnen können.","Feature,Industrie,Priorität: Nice-to-have,Aufwand: Mittel"
+"PRO-01: Pick-by-Light","**User Story:** Als **Mitarbeiter** möchte ich eine **Pick-by-Light-Funktion**, bei der die LED an der richtigen Box aufleuchtet, um die Entnahme zu beschleunigen.","Feature,Industrie,UX,Priorität: Nice-to-have,Aufwand: Mittel"
+"QUAL-01: Automatisierte Tests einrichten","**User Story:** Als **Entwickler** möchte ich **automatisierte Tests** einrichten, um Regressionen zu verhindern.
+
+**Akzeptanzkriterien:**
+- [ ] `pytest` ist im Projekt eingerichtet.
+- [ ] Ein erster Test für eine Kernroute existiert und läuft erfolgreich.","Qualität,Infrastruktur,Priorität: Should-have,Aufwand: Mittel"
+"QUAL-03: CI/CD-Pipeline aufsetzen","**User Story:** Als **Entwickler** möchte ich eine **CI/CD-Pipeline** aufsetzen, die bei jedem Push automatisch Tests ausführt.
+
+**Abhängigkeiten:** QUAL-01","Qualität,Infrastruktur,Priorität: Should-have,Aufwand: Hoch"
+"QUAL-04: Anwendung containerisieren","**User Story:** Als **Entwickler** möchte ich die Anwendung in **Docker-Container** verpacken, um das Setup zu vereinfachen.","Qualität,Infrastruktur,Priorität: Should-have,Aufwand: Hoch"
+"OPS-01: Strukturiertes Logging","**User Story:** Als **Betreiber** möchte ich ein **strukturiertes Logging** haben, um Fehler im laufenden Betrieb schnell analysieren zu können.","Qualität,Infrastruktur,Priorität: Should-have,Aufwand: Mittel"
+"OPS-02: Monitoring-Dashboard","**User Story:** Als **Betreiber** möchte ich ein **Monitoring-Dashboard** haben, um den Systemzustand live zu überwachen.","Feature,Reporting,Priorität: Nice-to-have,Aufwand: Hoch"
+"OPS-03: Systemkonfiguration mit Ansible","**User Story:** Als **Entwickler** möchte ich die **Systemkonfiguration (des Raspberry Pi) mit Ansible automatisieren**, um neue Stationen schnell und identisch aufsetzen zu können.","Qualität,Infrastruktur,Priorität: Nice-to-have,Aufwand: Hoch"
+"API-01: API-Dokumentation mit OpenAPI","**User Story:** Als **Entwickler** möchte ich die **System-API mit OpenAPI (Swagger) dokumentieren**, um die Anbindung weiterer Clients (z.B. mobile App) zu erleichtern.","Qualität,Infrastruktur,Priorität: Nice-to-have,Aufwand: Mittel"

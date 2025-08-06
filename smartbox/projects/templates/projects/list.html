@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>{{ title }}</h1>
+        <a href="{{ url_for('projects.add') }}" class="btn btn-primary">{{ _('Neues Projekt anlegen') }}</a>
+    </div>
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ project.image_url or '/static/images/placeholder.jpg' }}" class="card-img-top" alt="{{ project.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.name }}</h5>
+                    <p class="card-text">{{ project.description or '' }}</p>
+                    <a href="#" class="btn btn-secondary">{{ _('Bearbeiten') }}</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

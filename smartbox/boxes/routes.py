@@ -3,18 +3,23 @@ from smartbox import db
 from smartbox.models import Box, Material
 from smartbox.boxes.forms import BoxForm
 from flask_babel import _
+from flask_login import login_required
 from smartbox.decorators import admin_required
 
 # Wir entfernen den 'template_folder', um die globalen Templates zu nutzen
 boxes_bp = Blueprint('boxes', __name__)
 
 @boxes_bp.route('/')
+@login_required 
+@admin_required
 def list_all():
     boxes = Box.query.all()
     # Wir geben den exakten Pfad zum Template an
     return render_template('boxes/list.html', boxes=boxes, title=_('Boxenübersicht'))
 
 @boxes_bp.route('/add', methods=['GET', 'POST'])
+@login_required 
+@admin_required
 def add():
     form = BoxForm()
     form.material_id.choices = [(m.id, m.name) for m in Material.query.order_by('name').all()]
@@ -35,6 +40,8 @@ def add():
     return render_template('boxes/form.html', form=form, title=_('Neue Box anlegen'))
 
 @boxes_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
+@login_required 
+@admin_required
 def edit(id):
     box = Box.query.get_or_404(id)
     form = BoxForm(obj=box)

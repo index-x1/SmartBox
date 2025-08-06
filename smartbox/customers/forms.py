@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, DateField, DecimalField
-from wtforms.validators import DataRequired, Optional, Email
+from wtforms.validators import DataRequired, Optional, Email, NumberRange
 from flask_babel import lazy_gettext as _l
 
 class CustomerForm(FlaskForm):
@@ -13,6 +13,7 @@ class CustomerForm(FlaskForm):
     street = StringField(_l('Straße'), validators=[Optional()])
     zip_code = StringField(_l('PLZ'), validators=[Optional()])
     city = StringField(_l('Stadt'), validators=[Optional()])
-    balance = DecimalField(_l('Guthaben (€)'), places=2, validators=[Optional()])
+    balance = DecimalField(_l('Guthaben (€)'), places=2, validators=[Optional()])  
+    deposit_amount = DecimalField(_l('Guthaben aufladen (€)'), places=2, validators=[Optional(), NumberRange(min=0)])
     is_active = BooleanField(_l('Aktiv'))
     submit = SubmitField(_l('Speichern'))

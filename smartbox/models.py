@@ -58,6 +58,12 @@ class Material(db.Model):
 
     price_group = db.relationship('PriceGroup', backref=db.backref('materials', lazy=True))
 
+    def needs_reorder(self, current_stock):
+        #Prüft, ob der aktuelle Bestand unter dem Mindestbestand liegt.
+        if self.reorder_threshold_grams is None:
+            return False
+        return current_stock < self.reorder_threshold_grams
+
 class Box(db.Model):
     __tablename__ = 'boxes'
     id = db.Column(db.Integer, primary_key=True)
@@ -74,11 +80,49 @@ class Transaction(db.Model):
     __tablename__ = 'transactions'
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
-    box_id = db.Column(db.Integer, db.ForeignKey('boxes.id'), nullable=False)
-    material_id = db.Column(db.Integer, db.ForeignKey('materials.id'), nullable=False)
-    grams_withdrawn = db.Column(db.Float, nullable=False)
-    cost = db.Column(db.Numeric(10, 2), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    box_id = db.Column(db.Integer, db.ForeignKey('boxes.id')) # Nullable für reine Guthaben-Transaktionen
+    material_id = db.Column(db.Integer, db.ForeignKey('materials.id')) # Nullable
+    
+    # NEU: Transaktions-Typ für Klarheit
+    transaction_type = db.Column(db.String(50), nullable=False) # z.B. 'withdrawal', 'deposit'
+    
+    # NEU: Detaillierte Gewichts-Protokollierung
+    initial_grams = db.Column(db.Float, nullable=True)
+    final_grams = db.Column(db.Float, nullable=True)
+    grams_withdrawn = db.Column(db.Float, nullable=True)
+    
+    cost = db.Column(db.Numeric(10, 2), nullable=False) # Betrag der Transaktion
+    
+    # NEU: Status für Fehleranalyse
+    status = db.Column(db.String(50), default='completed', nullable=False)
+    
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-    customer = db.relationship('Customer', backref=db.backref('transactions', lazy=True))
-    box = db.relationship('Box', backref=db.backref('transactions', lazy=True))
+    customer = db.relationship('Customer', backref=db.backref('transactions', lazy='dynamic'))
+    box = db.relationship('Box')
+    material = db.relationship('Material')
+
+class Project(db.Model):
+    __tablename__ = 'projects'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False, unique=True)
+    description = db.Column(db.Text)
+    image_url = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Beziehung zu den Projekt-Positionen
+    items = db.relationship('ProjectItem', backref='project', lazy='dynamic', cascade="all, delete-orphan")
+
+    def __repr__(self):
+        return f'<Project {self.name}>'
+
+class ProjectItem(db.Model):
+    __tablename__ = 'project_items'
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
+    material_id = db.Column(db.Integer, db.ForeignKey('materials.id'), nullable=False)
+    required_grams = db.Column(db.Float, nullable=False)
+    picking_order = db.Column(db.Integer, default=0) # Sortierreihenfolge
+
+    # Beziehung, um direkt auf das Material-Objekt zuzugreifen
+    material = db.relationship('Material')

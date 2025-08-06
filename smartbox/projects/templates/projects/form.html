@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=3) }}
+        </div>
+        <div class="mb-3">
+            {{ form.image_url.label(class="form-label") }}
+            {{ form.image_url(class="form-control") }}
+        </div>
+
+        <h4 class="mt-4">{{ _('Materialliste') }}</h4>
+        <div id="item-list">
+            {% for item in form.items %}
+            <div class="row align-items-center item-row mb-2">
+                {{ item.hidden_tag() }}
+                <div class="col-md-6">{{ item.material_id(class="form-select") }}</div>
+                <div class="col-md-4">{{ item.required_grams(class="form-control", placeholder="Menge in g") }}</div>
+                <div class="col-md-2"><button type="button" class="btn btn-sm btn-danger remove-item">X</button></div>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-item" class="btn btn-sm btn-outline-primary mt-2">+ {{ _('Material hinzufügen') }}</button>
+        
+        <hr class="my-4">
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+<script>
+    document.getElementById('add-item').addEventListener('click', function() {
+        const list = document.getElementById('item-list');
+        const totalForms = list.querySelectorAll('.item-row').length;
+        // Erzeuge eine Kopie des ersten Eintrags als Vorlage
+        const newItem = list.children[0].cloneNode(true);
+        // Aktualisiere die Namen der Felder, damit sie eindeutig sind
+        newItem.querySelectorAll('input, select').forEach(el => {
+            el.name = el.name.replace('-0-', `-${totalForms}-`);
+            el.id = el.id.replace('-0-', `-${totalForms}-`);
+            el.value = '';
+        });
+        list.appendChild(newItem);
+    });
+    document.getElementById('item-list').addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-item')) {
+            if (document.querySelectorAll('.item-row').length > 1) {
+                e.target.closest('.item-row').remove();
+            } else {
+                alert("Mindestens ein Material wird benötigt.");
+            }
+        }
+    });
+</script>
+{% endblock %}

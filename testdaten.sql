@@ -23,12 +23,23 @@ INSERT INTO boxes (id, rfid_uid, material_id, tare_weight, stock_grams, location
 (4, 'RFID-BOX-004', 4, 15.0, 80.0, 'Wertschrank'),
 (5, 'RFID-BOX-005', 5, 30.0, 420.0, 'Regal C, Fach 3');
 
--- Kunden
-INSERT INTO customers (id, first_name, last_name, rfid_uid, balance, birthday, street, zip_code, city, role, email, is_active) VALUES
-(1, 'Max', 'Mustermann', 'RFID-CUST-MAX', 25.50, '1990-05-15', 'Musterstraße 1', '97070', 'Würzburg', 'customer', 'max@test.de', 1),
-(2, 'Erika', 'Musterfrau', 'RFID-CUST-ERIKA', 50.00, '1985-11-22', 'Testweg 5a', '97222', 'Rimpar', 'customer', 'erika@test.de', 1),
-(3, 'Admin', 'User', 'RFID-ADMIN-001', 999.00, '1980-01-01', 'Hauptstr. 10', '10115', 'Berlin', 'admin', 'admin@smartbox.de', 1),
-(4, 'Lisa', 'Kreativ', 'RFID-CUST-LISA', 15.00, '2001-07-30', 'Am Park 3', '97072', 'Würzburg', 'customer', 'lisa@test.de', 1),
-(5, 'Tom', 'Bastler', 'RFID-CUST-TOM', 5.20, '1995-03-12', 'Werkstattweg 8', '97292', 'Zell', 'customer', 'tom@test.de', 0);
+-- Kunden (mit gehashtem Admin-Passwort für 'admin')
+INSERT INTO customers (id, first_name, last_name, rfid_uid, balance, birthday, role, email, is_active, password_hash) VALUES
+(1, 'Max', 'Mustermann', 'RFID-CUST-MAX', 25.50, '1990-05-15', 'customer', 'max@test.de', 1, NULL),
+(2, 'Erika', 'Musterfrau', 'RFID-CUST-ERIKA', 50.00, '1985-11-22', 'customer', 'erika@test.de', 1, NULL),
+(3, 'Admin', 'User', 'RFID-ADMIN-001', 999.00, '1980-01-01', 'admin', 'admin@smartbox.de', 1, 'scrypt:32768:8:1$ET8FnpzQmXIJsPKA$433377aa61363e53fc480734873be1c07a037424b4ad875adb79db0786f90442691e79d62ef5ddde6e22d529eef466be33bd7d992e515444ed373190cc1bcf54'), -- Ersetze dies durch einen echten Hash
+(4, 'Lisa', 'Kreativ', 'RFID-CUST-LISA', 15.00, '2001-07-30', 'customer', 'lisa@test.de', 1, NULL),
+(5, 'Tom', 'Bastler', 'RFID-CUST-TOM', 5.20, '1995-03-12', 'customer', 'tom@test.de', 0, NULL);
+
+-- Projekte
+INSERT INTO projects (id, name, description, image_url) VALUES
+(1, 'Schmuck-Set Amethyst', 'Ein einfaches Set zur Herstellung einer Halskette und eines Armbands.', '/static/images/projekt_schmuck.jpg'),
+(2, 'Vogelhaus-Bausatz', 'Alle benötigten Holzteile und Schrauben für ein kleines Vogelhaus.', '/static/images/projekt_vogelhaus.jpg');
+
+-- Projekt-Positionen (BOM)
+INSERT INTO project_items (project_id, material_id, required_grams, picking_order) VALUES
+(1, 3, 50, 1),  -- 50g Amethyst-Splitter
+(1, 4, 5, 2),   -- 5g Silberdraht
+(2, 2, 20, 1);  -- 20g Holzknöpfe (als symbolische Schrauben)
 
 COMMIT;
